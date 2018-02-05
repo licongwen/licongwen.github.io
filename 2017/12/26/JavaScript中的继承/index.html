@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="很久没有写blog了。今天来回顾一下js中的继承。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript中的继承">
+<meta property="og:url" content="http://yoursite.com/2017/12/26/JavaScript中的继承/index.html">
+<meta property="og:site_name" content="licongwen">
+<meta property="og:description" content="很久没有写blog了。今天来回顾一下js中的继承。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-12-28T06:39:08.408Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript中的继承">
+<meta name="twitter:description" content="很久没有写blog了。今天来回顾一下js中的继承。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'licongwen'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/12/26/JavaScript中的继承/"/>
+
+
+
+
+
+  <title>JavaScript中的继承 | licongwen</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/licongwen"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">licongwen</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">临渊羡鱼，不如退而结网！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/关于/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-作品">
+          <a href="/作品/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            作品
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/12/26/JavaScript中的继承/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/lufei.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="licongwen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">JavaScript中的继承</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-12-26T14:28:54+08:00">
+                2017-12-26
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>很久没有写blog了。今天来回顾一下js中的继承。<br><a id="more"></a></p>
+<h3 id="1、原型继承"><a href="#1、原型继承" class="headerlink" title="1、原型继承"></a>1、原型继承</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="keyword">this</span>.name = <span class="string">'animal'</span>;</div><div class="line">&#125;</div><div class="line">Animal.prototype.sayName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">`i am <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>)</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Dog</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	</div><div class="line">&#125;</div><div class="line">Dog.prototype = <span class="keyword">new</span> Animal();</div><div class="line">Dog.prototype.constructor = Dog;<span class="comment">//需要将原型的constructor属性重新指向Dog</span></div><div class="line"><span class="keyword">var</span> dog = <span class="keyword">new</span> Dog();</div><div class="line"><span class="built_in">console</span>.log(dog.sayName());<span class="comment">//i am animal</span></div></pre></td></tr></table></figure>
+<p>缺点：1、<strong>需要将子类原型的constructor属性重新指向子类构造函数；</strong><br>      2、<strong>若属性为引用类型，则会被所有实例共享,比如：</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Animal</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="keyword">this</span>.name = [<span class="string">'adam'</span>,<span class="string">'allen'</span>];</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Dog</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	</div><div class="line">&#125;</div><div class="line">Dog.prototype = <span class="keyword">new</span> Animal();</div><div class="line"><span class="keyword">var</span> dog1 = <span class="keyword">new</span> Dog();</div><div class="line"><span class="keyword">var</span> dog2 = <span class="keyword">new</span> Dog();</div><div class="line">dog1.name.push(<span class="string">'jas'</span>);</div><div class="line"><span class="built_in">console</span>.log(dog1.name);<span class="comment">//["adam", "allen", "jas"]</span></div><div class="line"><span class="built_in">console</span>.log(dog2.name);<span class="comment">//["adam", "allen", "jas"]</span></div></pre></td></tr></table></figure></p>
+<h3 id="2、借用构造函数"><a href="#2、借用构造函数" class="headerlink" title="2、借用构造函数"></a>2、借用构造函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">	<span class="keyword">this</span>.name = name;</div><div class="line">	<span class="keyword">this</span>.friends = [<span class="string">'carl'</span>,<span class="string">'king'</span>];</div><div class="line">&#125;</div><div class="line">Parent.prototype.sayName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">`my name is <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>);</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Child</span>(<span class="params">parentName</span>)</span>&#123;</div><div class="line">	Parent.call(<span class="keyword">this</span>,parentName);</div><div class="line">&#125;;</div><div class="line"><span class="keyword">var</span> child1 = <span class="keyword">new</span> Child(<span class="string">'li'</span>);</div><div class="line"><span class="keyword">var</span> child2 = <span class="keyword">new</span> Child(<span class="string">'simon'</span>);</div><div class="line">child1.friends.push(<span class="string">'sheery'</span>);</div><div class="line"><span class="built_in">console</span>.log(child1.name);<span class="comment">//li</span></div><div class="line"><span class="built_in">console</span>.log(child1.friends);<span class="comment">//['carl','king','sheery'];</span></div><div class="line"><span class="built_in">console</span>.log(child2.friends);<span class="comment">//['carl','king'];</span></div><div class="line">child1.sayName();<span class="comment">//Uncaught TypeError: child1.sayName is not a function</span></div></pre></td></tr></table></figure>
+<p>优点：1、<strong>避免了引用类型的属性被实例共享;</strong><br>      2、<strong>在子类中可以向父类中传参数；</strong><br>缺点：1、<strong>无法继承原型；</strong><br>      2、<strong>每次创建实例时都会调用一次方法。</strong></p>
+<h3 id="3、组合继承"><a href="#3、组合继承" class="headerlink" title="3、组合继承"></a>3、组合继承</h3><p>组合继承就是将原型方法和构造函数方法结合在一起的方法。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">	<span class="keyword">this</span>.name = name;</div><div class="line">	<span class="keyword">this</span>.age = <span class="number">10</span>;</div><div class="line">&#125;</div><div class="line">Parent.prototype.sayName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">`parent name is <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>);</div><div class="line">&#125;</div><div class="line">Parent.prototype.doSomthing = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">'parent is doing something'</span>)</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Child</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">	Parent.call(<span class="keyword">this</span>,name)</div><div class="line">&#125;</div><div class="line">Child.prototype = <span class="keyword">new</span> Parent(<span class="string">'father'</span>);</div><div class="line">Child.prototype.constructor = Child;</div><div class="line"></div><div class="line">Child.prototype.sayName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">`child's name is <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>);</div><div class="line">&#125;</div><div class="line"></div><div class="line"><span class="keyword">var</span> child = <span class="keyword">new</span> Child(<span class="string">'child'</span>)</div><div class="line">child.sayName();<span class="comment">//child's name is child</span></div><div class="line">child.doSomthing();<span class="comment">//parent is doing something</span></div></pre></td></tr></table></figure></p>
+<p>缺点：<strong>组合继承是JS最常用的继承模式，但是在组合继承中，父类会被调用两次，一次在子类构造函数内，一次在子类原型继承父类实例。</strong></p>
+<p>###原型式继承<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> ob = &#123;<span class="attr">name</span>:<span class="string">'xiaobao'</span>,<span class="attr">friends</span>:[<span class="string">'jie'</span>,<span class="string">'bao'</span>]&#125;;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">obj</span>)</span>&#123;</div><div class="line">	<span class="function"><span class="keyword">function</span> <span class="title">F</span>(<span class="params"></span>)</span>&#123;&#125;;</div><div class="line">	F.prototype = obj;</div><div class="line">	<span class="keyword">return</span> <span class="keyword">new</span> F();</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> child1 = <span class="keyword">new</span> Parent(ob);</div><div class="line"><span class="keyword">var</span> child2 = <span class="keyword">new</span> Parent(ob);</div><div class="line">child1.name = <span class="string">'dazhi'</span>;</div><div class="line"></div><div class="line"><span class="built_in">console</span>.log(child1.name);<span class="comment">//dazhi</span></div><div class="line"><span class="built_in">console</span>.log(child2.name);<span class="comment">//xioabao</span></div><div class="line">child1.friends.push(<span class="string">'qing'</span>);</div><div class="line"><span class="built_in">console</span>.log(child1.friends);<span class="comment">//['jie','bao','qing']</span></div><div class="line"><span class="built_in">console</span>.log(child2.friends);<span class="comment">//['jie','bao','qing']</span></div></pre></td></tr></table></figure></p>
+<p>缺点：<strong>实例会共享引用类型的变量</strong></p>
+<p>###寄生式继承<br>1.创建一个仅用于封装过程的函数，在函数内部已某种方式增强对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> ob = &#123;</div><div class="line">	name:<span class="string">'xiaobao'</span>,</div><div class="line">	friends:[<span class="string">'xiaojie'</span>,<span class="string">'xiaowen'</span>]</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">createObj</span>(<span class="params">obj</span>)</span>&#123;</div><div class="line">	<span class="keyword">var</span> newObj = <span class="built_in">Object</span>.create(obj);</div><div class="line">	newObj.sayName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="keyword">this</span>.name);</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> newObj;</div><div class="line">&#125;</div><div class="line"><span class="keyword">var</span> obj = <span class="keyword">new</span> createObj(ob);</div><div class="line">obj.sayName();<span class="comment">//'xiaobao'</span></div></pre></td></tr></table></figure></p>
+<h3 id="寄生组合式继承"><a href="#寄生组合式继承" class="headerlink" title="寄生组合式继承"></a>寄生组合式继承</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div></pre></td><td class="code"><pre><div class="line">   <span class="function"><span class="keyword">function</span> <span class="title">inhertPrototype</span>(<span class="params">Parent,Child</span>)</span>&#123;</div><div class="line">	Child.prototype = <span class="built_in">Object</span>.create(Parent.prototype);</div><div class="line">	Child.prototype.constructor = Child;</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Parent</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">	<span class="keyword">this</span>.name = name;</div><div class="line">	<span class="keyword">this</span>.friends = [<span class="string">'xiaobao'</span>,<span class="string">'xiaojie'</span>];</div><div class="line">&#125;</div><div class="line">Parent.prototype.sayName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">`parent's name is <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>)</div><div class="line">&#125;</div><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">Child</span>(<span class="params">name,parentName</span>)</span>&#123;</div><div class="line">	Parent.call(<span class="keyword">this</span>,parentName);</div><div class="line">	<span class="keyword">this</span>.name = name;</div><div class="line">&#125;</div><div class="line">Child.prototype.sayName = <span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">	<span class="built_in">console</span>.log(<span class="string">`child's name is <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>);</div><div class="line">&#125;</div><div class="line">inhertPrototype(Parent,Child);</div><div class="line"><span class="keyword">var</span> parent = <span class="keyword">new</span> Parent(<span class="string">'father'</span>);</div><div class="line">parent.sayName();<span class="comment">//parent's name is father</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> child1 = <span class="keyword">new</span> Parent(<span class="string">'son1'</span>,<span class="string">'father'</span>);</div><div class="line">child1.friends.push(<span class="string">'abei'</span>);</div><div class="line"><span class="built_in">console</span>.log(child1.friends);<span class="comment">//['xioabao','xiaojie','abei']</span></div><div class="line">child1.sayName();<span class="comment">//child's name is son1</span></div><div class="line"></div><div class="line"><span class="keyword">var</span> child2 = <span class="keyword">new</span> Child(<span class="string">'son2'</span>,<span class="string">'father'</span>);</div><div class="line"><span class="built_in">console</span>.log(child2.friends);<span class="comment">//['xioabao','xiaojie']</span></div><div class="line">child2.sayName();<span class="comment">//child's name is son2;</span></div></pre></td></tr></table></figure>
+<h3 id="ES6-的继承"><a href="#ES6-的继承" class="headerlink" title="ES6 的继承"></a>ES6 的继承</h3><p>1、ES6提供了更接近传统语言“类”的写法，引入了Class（类）这个概念，中作为对象的模板。<br>2、通过Class关键字，可以定义类。Class可以看做只是一个语法糖，它的绝大部分功能，ES5都可以做到。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Parent</span></span>&#123;</div><div class="line">	<span class="keyword">constructor</span>(name)&#123;</div><div class="line">		<span class="keyword">this</span>.name = name;</div><div class="line">	&#125;</div><div class="line">	doSomthing()&#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">'parent do something'</span>);</div><div class="line">	&#125;</div><div class="line">	sayName()&#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">`parent's name is <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="class"><span class="keyword">class</span> <span class="title">Child</span> <span class="keyword">extends</span> <span class="title">Parent</span></span>&#123;</div><div class="line">	<span class="keyword">constructor</span>(name,parentName)&#123;</div><div class="line">		<span class="keyword">super</span>(parentName);</div><div class="line">		<span class="keyword">this</span>.name = name;</div><div class="line">	&#125;</div><div class="line">	</div><div class="line">	sayName()&#123;</div><div class="line">		<span class="built_in">console</span>.log(<span class="string">`chlid'name is <span class="subst">$&#123;<span class="keyword">this</span>.name&#125;</span>`</span>);</div><div class="line">	&#125;</div><div class="line">&#125;</div><div class="line"><span class="keyword">const</span> child = <span class="keyword">new</span> Child(<span class="string">'son'</span>,<span class="string">'father'</span>);</div><div class="line">child.sayName();<span class="comment">//child's name is son</span></div><div class="line">child.doSomthing();<span class="comment">//parent do somthing</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> parent = <span class="keyword">new</span> Parent(<span class="string">'father'</span>);</div><div class="line">parent.sayName();<span class="comment">//parent's name is father</span></div></pre></td></tr></table></figure></p>
+<p><strong>推荐使用ES6的语法开发。使用ES6的继承</strong></p>
+<h3 id="参考文章：点这里"><a href="#参考文章：点这里" class="headerlink" title="参考文章：点这里"></a>参考文章：<a href="http://dudodo.cc/2017/04/11/理解JS中的继承/" target="_blank" rel="external">点这里</a></h3>
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/11/17/深浅拷贝/" rel="next" title="深浅拷贝">
+                <i class="fa fa-chevron-left"></i> 深浅拷贝
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/lufei.jpg"
+                alt="Leo" />
+            
+              <p class="site-author-name" itemprop="name">Leo</p>
+              <p class="site-description motion-element" itemprop="description">hexo light</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#1、原型继承"><span class="nav-number">1.</span> <span class="nav-text">1、原型继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2、借用构造函数"><span class="nav-number">2.</span> <span class="nav-text">2、借用构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3、组合继承"><span class="nav-number">3.</span> <span class="nav-text">3、组合继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#寄生组合式继承"><span class="nav-number">4.</span> <span class="nav-text">寄生组合式继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ES6-的继承"><span class="nav-number">5.</span> <span class="nav-text">ES6 的继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#参考文章：点这里"><span class="nav-number">6.</span> <span class="nav-text">参考文章：点这里</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

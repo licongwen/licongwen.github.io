@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next mist use-motion" lang="zh-CN">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+<script src="//cdn.bootcss.com/pace/1.0.2/pace.min.js"></script>
+<link href="//cdn.bootcss.com/pace/1.0.2/themes/pink/pace-theme-flash.css" rel="stylesheet">
+<style>
+    .pace .pace-progress {
+        background: #1E92FB; /*进度条颜色*/
+        height: 3px;
+    }
+    .pace .pace-progress-inner {
+         box-shadow: 0 0 10px #1E92FB, 0 0 5px     #1E92FB; /*阴影颜色*/
+    }
+    .pace .pace-activity {
+        border-top-color: #1E92FB;    /*上边框颜色*/
+        border-left-color: #1E92FB;    /*左边框颜色*/
+    }
+</style>
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.3" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.3">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.3">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.3" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="引言在angularJs中service使我们经常用到的一个东西。我们知道在angularJS中有三种创建服务的方法：factory()，service()和provider()。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AngularJs的factory，service和provider">
+<meta property="og:url" content="http://yoursite.com/2017/10/12/ng1-x-service/index.html">
+<meta property="og:site_name" content="licongwen">
+<meta property="og:description" content="引言在angularJs中service使我们经常用到的一个东西。我们知道在angularJS中有三种创建服务的方法：factory()，service()和provider()。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2017-11-25T06:05:18.523Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="AngularJs的factory，service和provider">
+<meta name="twitter:description" content="引言在angularJs中service使我们经常用到的一个东西。我们知道在angularJS中有三种创建服务的方法：factory()，service()和provider()。">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Mist',
+    version: '5.1.3',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'licongwen'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/10/12/ng1-x-service/"/>
+
+
+
+
+
+  <title>AngularJs的factory，service和provider | licongwen</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+	<a href="https://github.com/licongwen"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">licongwen</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">临渊羡鱼，不如退而结网！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/关于/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            关于
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            标签
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br />
+            
+            分类
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-作品">
+          <a href="/作品/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-calendar"></i> <br />
+            
+            作品
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/10/12/ng1-x-service/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/lufei.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="licongwen">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">AngularJs的factory，service和provider</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-10-12T14:11:16+08:00">
+                2017-10-12
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>在angularJs中service使我们经常用到的一个东西。我们知道在angularJS中有三种创建服务的方法：factory()，service()和provider()。<br><a id="more"></a></p>
+<h2 id="service的作用"><a href="#service的作用" class="headerlink" title="service的作用"></a>service的作用</h2><p>在AngulaJS中，service作为单列对象在需要的时候被创建，只有在应用生命周期结束的时候（关闭浏览器）才会被清除。而controller在不需要的时候才会被销毁。（service的底层机制是通过闭包实现的，过分使用会导致性能问题）。这也正是在controller里面传递数据不可靠的原因。</p>
+<h2 id="factory"><a href="#factory" class="headerlink" title="factory()"></a>factory()</h2><p>在AngularJS中创建service最简单的方式是使用factory()方法。<br>factory方式创建的服务，返回的是一个有属性有方法的对象。<br>在service方法中我们可以注入其他service，比如$http等，但不能注入$scope作用域对象。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'myapp'</span>,[])</div><div class="line">.factory(<span class="string">'myFactory'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$http</span>)</span>&#123;</div><div class="line">	<span class="keyword">var</span> service=&#123;</div><div class="line">		user=&#123;&#125;,</div><div class="line">		setName:<span class="function"><span class="keyword">function</span>(<span class="params">name</span>)</span>&#123;</div><div class="line">			service.user[<span class="string">'name'</span>]=name;</div><div class="line">		&#125;,</div><div class="line">		setEmail:<span class="function"><span class="keyword">function</span>(<span class="params">email</span>)</span>&#123;</div><div class="line">			service.user[<span class="string">'email'</span>]=email;</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">return</span> service;</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>在controller中使用我们创建的服务<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'myapp'</span>,[])</div><div class="line">.controller(<span class="string">'myCtrl'</span>,[<span class="string">'$scope'</span>,<span class="string">'myFactory'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$scope,myFactory</span>)</span>&#123;</div><div class="line">	myFactory.setName(<span class="string">'xiaomei'</span>);</div><div class="line">&#125;])</div></pre></td></tr></table></figure></p>
+<p>什么情况下使用factory()<br>在service里面当我们仅仅需要的是一个方法和数据的集合且不需要复杂的逻辑的时候，factory是一个不错的选择。</p>
+<h2 id="service"><a href="#service" class="headerlink" title="service()"></a>service()</h2><p> 通过service方式创建的自定义服务，相当于new出来的一个对象：var obj = new myService()。需要把属性和方法添加到this上才可以在controller里调用。<br> <figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line">angular.module(<span class="string">'myapp'</span>,[])</div><div class="line">.service(<span class="string">'myService'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$http,$q</span>)</span>&#123;</div><div class="line">	<span class="keyword">this</span>.name=<span class="string">'service'</span>;</div><div class="line">	<span class="keyword">this</span>.myFunc=<span class="function"><span class="keyword">function</span>(<span class="params">x</span>)</span>&#123;</div><div class="line">		<span class="keyword">return</span> x.toString(<span class="number">16</span>)</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">this</span>.getData=<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">		<span class="keyword">var</span> d = $q.defer();</div><div class="line">		$http.get(<span class="string">'url'</span>)</div><div class="line">			.success(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>&#123;</div><div class="line">				d.resolve(res)</div><div class="line">			&#125;)</div><div class="line">			.error(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">				d.reject(<span class="string">'error'</span>);</div><div class="line">			&#125;)</div><div class="line">			<span class="keyword">return</span> d.promise;</div><div class="line">	&#125;</div><div class="line">&#125;)</div><div class="line">.controller(<span class="string">'myCtrl'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$scope,myService</span>)</span>&#123;</div><div class="line">	$scope.num=myService.myFunc(<span class="number">255</span>);</div><div class="line">	myService.getData.then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">		<span class="comment">//正确是执行这里</span></div><div class="line">	&#125;,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">		<span class="comment">//错误时执行这里</span></div><div class="line">	&#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p> 什么时候使用service()<br> 与factory相比，由于service是通过构造函数的方式创建的，且持有创造对象的本身，所以我们在功能比较复杂的情况下，可以通过service中的方法和数据对controller中的变量进行赋值，从某种角度来说，service()和factory()的实现方式不同，但是两者在使用场景上却很接近。</p>
+<h2 id="provider"><a href="#provider" class="headerlink" title="provider()"></a>provider()</h2><p> 只有provider是能传.config()函数的service。如果想在service对象启用之前，先进行模块范围的配置，那就应该选择provider。需要注意的是：在config函数里注入provider时，名字的格式为<br> providerName+Provider。使用Provider的优点就是，你可以在Provider对象传递到应用程序的其他部分之前在app.config函数中对其进行修改。<br> 当你使用Provider创建一个service时，唯一的可以在你的控制器中访问的属性和方法是通过$get()函数返回内容。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">var</span> app = angular.module(<span class="string">'myapp'</span>,[]);</div><div class="line"><span class="comment">//在config中注入provider时，名字应该是：providerName+Provider</span></div><div class="line">app.config(<span class="function"><span class="keyword">function</span>(<span class="params">myProviderProvider</span>)</span>&#123;</div><div class="line">	myProviderProvider.setName(<span class="string">'xiaomei'</span>);</div><div class="line">&#125;)</div><div class="line">app.provider(<span class="string">'myProvider'</span>,<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;<span class="comment">//注意不能再这里注入$http,$q等服务</span></div><div class="line">	<span class="keyword">var</span> name=<span class="string">''</span>;</div><div class="line">	<span class="keyword">var</span> test=&#123;<span class="string">"a"</span>:<span class="number">1</span>,<span class="string">"b"</span>:<span class="number">2</span>&#125;;</div><div class="line">	<span class="keyword">this</span>.setName = <span class="function"><span class="keyword">function</span>(<span class="params">newName</span>)</span>&#123;</div><div class="line">		name = newName;</div><div class="line">	&#125;</div><div class="line">	<span class="keyword">this</span>.$get=<span class="function"><span class="keyword">function</span>(<span class="params">$http,$q</span>)</span>&#123;<span class="comment">//在这里注入服务</span></div><div class="line">		<span class="keyword">return</span> &#123;</div><div class="line">			getData:<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">				<span class="keyword">var</span> d = $q.defer();</div><div class="line">				$http.get(<span class="string">'url'</span>)</div><div class="line">				.success(<span class="function"><span class="keyword">function</span>(<span class="params">res</span>)</span>&#123;</div><div class="line">					d.resolve(res);</div><div class="line">				&#125;)</div><div class="line">				.error(<span class="function"><span class="keyword">function</span>(<span class="params"></span>)</span>&#123;</div><div class="line">					d.reject(error);</div><div class="line">				&#125;);</div><div class="line">				retrun d.promise;</div><div class="line">			&#125;,</div><div class="line">			<span class="string">"lastName"</span>:name,</div><div class="line">			<span class="string">"test"</span>:test</div><div class="line">		&#125;</div><div class="line">	&#125;</div><div class="line">&#125;)</div><div class="line">app.constroller(<span class="string">'myCtrl'</span>,<span class="function"><span class="keyword">function</span>(<span class="params">$scope,myProvider</span>)</span>&#123;</div><div class="line">	alert(myProvider.lastName);</div><div class="line">	alert(myProvider.test.a);</div><div class="line">	myprovider.getData().then(<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">		alert(data);</div><div class="line">	&#125;,<span class="function"><span class="keyword">function</span>(<span class="params">data</span>)</span>&#123;</div><div class="line">		alert(data);</div><div class="line">	&#125;)</div><div class="line">&#125;)</div></pre></td></tr></table></figure></p>
+<p>什么时候使用provider()<br>我们希望用到可配置的service时，我们就必须要使用provider()。</p>
+<h2 id="在filter中使用服务"><a href="#在filter中使用服务" class="headerlink" title="在filter中使用服务"></a>在filter中使用服务</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line">&lt;p&gt;&#123;&#123;<span class="number">12</span> | format&#125;&#125;&lt;<span class="regexp">/p&gt;</span></div><div class="line"><span class="regexp">var myapp = angular.module('myapp');</span></div><div class="line"><span class="regexp">myapp.service('myService',function()&#123;</span></div><div class="line"><span class="regexp">	this.myFunc=function(x)&#123;</span></div><div class="line"><span class="regexp">		return x.toString(16);</span></div><div class="line"><span class="regexp">	&#125;</span></div><div class="line"><span class="regexp">&#125;)</span></div><div class="line"><span class="regexp">myapp.filter('format',['myService',function(myService)&#123;</span></div><div class="line"><span class="regexp">	return function(x)&#123;</span></div><div class="line"><span class="regexp">		return myService.myFunc(x);</span></div><div class="line"><span class="regexp">	&#125;</span></div><div class="line"><span class="regexp">&#125;])</span></div></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>1、factory()就像仓库一样，存储我们的方法和数据<br>2、service()在创建时会持有自身对，需要把属性和方法添加到this上才可以在controller里调用。<br>3、provider()是唯一一个可以在config()中进行配置的service，它在设计上和用处上与以上二者区别明显。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/10/原型和原型链/" rel="next" title="原型和原型链">
+                <i class="fa fa-chevron-left"></i> 原型和原型链
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/10/16/angular/" rel="prev" title="Angular">
+                Angular <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="/images/lufei.jpg"
+                alt="Leo" />
+            
+              <p class="site-author-name" itemprop="name">Leo</p>
+              <p class="site-description motion-element" itemprop="description">hexo light</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">8</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          <div class="links-of-author motion-element">
+            
+          </div>
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#引言"><span class="nav-number">1.</span> <span class="nav-text">引言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service的作用"><span class="nav-number">2.</span> <span class="nav-text">service的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#factory"><span class="nav-number">3.</span> <span class="nav-text">factory()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#service"><span class="nav-number">4.</span> <span class="nav-text">service()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#provider"><span class="nav-number">5.</span> <span class="nav-text">provider()</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#在filter中使用服务"><span class="nav-number">6.</span> <span class="nav-text">在filter中使用服务</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2017</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Mist</a> v5.1.3</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.3"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.3"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.3"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.3"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+
+</body>
+</html>

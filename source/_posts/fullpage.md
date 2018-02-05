@@ -1,0 +1,117 @@
+---
+title: fullpage
+date: 2016-06-23 15:39:39
+tags: fullpage jquery
+---
+fullpage.js是一个基于jQuery的插件，它能很方便、很轻松的制作全屏网站，
+主要的功能有：
+	1、支持鼠标滚动
+	2、多个回调函数
+	3、支持手机、平板触摸
+	4、支持Css3动画
+	5、支持窗口缩放
+	6、窗口缩放时自动调整
+	7、可设置滚动宽度、背景颜色、滚动速度、循环选项、回调。文本对齐方式等
+<!--more-->
+主要配置项：
+	1、sectionsColor:
+		可以为每一个section设置background-color属性
+	2、controlArrwos：
+		定义是否通过箭头来控制slide幻灯片，默认为true。当我们设置为false，则幻灯片左右两侧的箭头就会消失，在移动设备上，我们就可以通过滑动来操作幻灯片。
+	3、verticalCentered：
+		每一页的内容是否垂直居中，默认为true。一般保持默认值
+	4、resize：
+		字体是否随窗口缩放二缩放，默认为false；
+	5、scrollingSpeed：
+		滚动速度，单位毫秒，默认为 700。
+	6、anchors：
+		定义锚链接，默认的值为[]。有了锚链接，用户就可以快速打开定位到某一页面。
+		在定义锚链接的时候，值不要和页面中任意的id或name相同，尤其是在IE浏览器下。定义时不需要加#。
+	7、lockAnchors：
+		是否锁定锚链接，默认的值为false。如果设置为true，也就是anchors属性没有效果。这个配置项使用的比较少。		
+	8、easing:
+		定义页面section的滚动动画方式，默认的为easyInOutCubic，如果要修改此项，需要引入jquery.easing插件，或者jquery ui。
+	9、css3：
+		是否使用css3的transforms来实现滚动效果，默认为true。这个配置项可以提高css3的浏览器，比如移动设备等的速度，如果浏览器不支持css3，就会使用jquery来代替css3实现滚动效果。
+	10、loopTop：
+		滚动到顶部后是否连续滚动到底部，默认为false。
+	11、loopBottom：
+		滚动到最底部后是否连续滚动到首部，默认为false。
+	12、loopHorizontal：
+		横向slider幻灯片是否循环滚动，默认为true。
+	13、autoScrolling：
+		是否使用插件的滚动方式，默认为true，如果选择false，则会出现浏览器自带的滚动条。将不会按业滚动，而是按滚动条的默认行为来滚动。
+	14、scrollBar：
+		是否包含滚动条，默认为false，如果设置为true。则浏览器的自带滚动条出现，页面滚动还是按业滚动，但是滚动条的默认行为还是有效。
+	15、paddingTop/paddingBottom：
+		设置每一个section顶部和底部的padding，默认值为0.一般如果我们需要设置一个固定在顶部或者底部的菜单、导航、元素等，可以使用这两个配置选项。
+	16、fixedElements：
+		固定元素，默认值为null，需要配置一个jquery选择器。在页面滚动的时候，fixedElememts设置的元素固定不动。
+	17、keyboarScrolling：是否可以使用键盘方向导航，默认true。
+	18、touchSensitivity：在移动设备中滑动页面的敏感性，默认为5.按百分比来衡量，最高100，越大越难滑动。
+	19、continuousVertical：
+		是否循环滚动，默认为false。如果设置为true，则会循环滚动。而不像looTop和loopBottom那样出现跳动，注意这个属性和loopTop、loopBottom不兼容，不要同时设置。
+	20、animateAnchor：
+		锚链接是否可以控制滚动动画，默认为true。如果设置为false，则通过锚链接定位到的某个页面显示不在有动画效果。
+	21、recordHistory：
+		是否记录历史，默认为true，可以记录页面滚动的历史，通过浏览器的前进后退来导航。如果设置了autoScrolling：false，那么这个配置项也将关闭，及设置为false。
+	22、menu：
+		绑定菜单，设置相关属性与anchors的想值对应后，菜单可以控制滚动，默认为false。可以设置为菜单的jquery选择器。
+	23、navigation：
+		是否显示导航，默认为false。如果设置为true，会显示小圆点，作为导航。
+	24、navigationPosition：
+		导航小圆点的位置，可以设置为left或者right。
+	25、navigationToltips：
+		导航小圆点的tooltips设置，默认为[]，注意按顺序设置。
+	26、showActiveTooltip：
+		是否显示当前页面的导航的tooltip信息，默认为false。
+	27、slidesNavigation：是否显示横向幻灯片的导航，默认为false。
+	28、slideNavPosition：横向幻灯片导航的位置，默认为bottom，可设置为top。	
+	29、scrollOverflow：内容超过满屏后是否显示滚动条，默认为false。如果设置为true，则会显示滚动条，如果要滚动查看内容，还需要jquery.slimscroll插件配合。slimscroll插件只要用于模拟传统的浏览器滚动条。
+	30、sectionSelector：section的选择器，默认为.section.
+	31、slideSelector:slide的选择器，默认为slide。
+主要方法：
+	所以方法的使用方式：
+		$.fn.fullpage.xxx()
+		-xxx()为某个方法
+	1、moveSectionUp():向上滚动一页。
+	2、moveSectionDown():向下滚动一页。
+	3、moveTo(section,slide):
+		滚动到第几页，第几个幻灯片，注意页面是从1开始，幻灯片是从0开始。
+	4、silentMoveTo(section,slide):滚动到第几页，和moveTo一样，但是没有动画效果。
+	5、moveSlideRight():幻灯片向右滚动。
+	6、moveSlideLeft()：幻灯片向左滚动。
+	7、setAutoScrolling（Boolean）：动态设置autoscrolling
+	8、setLockAnchors(boolean)：动态设置lockAnchors
+	9、setRecordHistory(boolean)：动态设置recordHistory
+	10、setScrollingSpeed（milliseconds）：动态设置srcollingSpeed。
+	11、setAllowScrolling(bollean，[directions]):
+		添加或删除鼠标滚轮/滑动控制，第一个参数true为启用，false为禁用，后面的参数为方向，取值包括all，up，down，left，right，可以使用多个。逗号分隔。
+	12、destroy(type)：
+		销毁fullpage特效，type可以不写，或者使用all，不用写type，fullpage给页面添加的样式和HTML元素还在，如果使用all，则样式、html等全部销毁，页面恢复和不适用fullpage相同的效果。
+	13、reBuild()：重新更新页面和尺寸，用于通过Ajax请求后改变了页面结构之后，重建效果。
+	
+	14、```html
+		<img data-src="img.png">
+		<video>
+			<source data-src="">
+		</video>
+		```
+		通过data-src来延时加载图片或视频、
+回调函数
+	1、afterLoad（anchorLink,index）:
+		滚动到某一section，且滚动结束后会触发一次此回调函数，函数参数anchorLink是锚链接的名称，index是序号从1开始计算。
+		我们可以根据anchorLink和index参数值判断，触发相应的事件。
+	2、onLeave(index,nextIndex,direction)
+		在我们离开一个section时会触发一次此回调函数
+		-index：离开页面的序号，从1开始计算；
+		-nextIndex：是滚动到的目标页面的序号，从1开始计算；
+		-direction判断往上滚动还是往下滚动，值为up或down
+		通过return false；可以取消滚动
+	3、afterRender()：页面结构生成后的回调函数，或者说是给页面初始化完成后的回调函数。
+	4、afterResize()：浏览器窗口尺寸改变后的回调函数。
+	5、afterSlideLoad(anchorLink,index,slideAnchor,slideIndex):
+		滚动到某一幻灯片后的回调函数，与afterLoad类似。
+	6、onSlideLeave(anchorLink，index，slideIndex，direction，nextSlideIndex)：
+		在离开一个slide时，会触发一次此回调函数，与onLeave类似。
+		
