@@ -89,11 +89,48 @@ If-None-Match:"15f0fff99ed5aae4edffdd6496d7131f"
 
 一个原始的http://http-caching-demo.herokuapp.com/网络请求展示了默认的响应头信息（没有缓存指令）
 ![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi4.jpg)
-通过添加cached查询参数，http://http-caching-demo.herokuapp.com/?cache=true，应用的缓存开启，Cache-Control和Expires头信息。（两者都设置了30s的缓存）；
+
+通过添加cached查询参数，http://http-caching-demo.herokuapp.com/?cache=true， 开启应用的缓存，返回带有Cache-Control和Expires头信息。（两者都设置了30s的缓存）；
 ![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi5.jpg)
+
 请求中增加ETag参数， http://http-caching-demo.herokuapp.com/?etag=true, 使得应用指定ETag序列化的JSON内容
 ![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi6.jpg)
+
 通过深入检查基于ETag的网络请求，可以看到浏览器从服务器下载的文件
 ![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi7.jpg)
+
 然而，在随后的请求中，你可以看到服务器返回的ETag检查结果为HTTP状态码304（not modified），随后浏览器就使用它自己的缓存副本。
 ![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi8.jpg)
+
+# 使用案例
+
+## 静态资源
+ 在正常使用情况下，任何开发人员的出发点都应该是对应用程序中的文件进行积极的缓存策略，而这些策略不会改变。通常的，包括为应用服务的静态资源有图片，css文件和javascript文件。由于这些文件通常在每一页上重新请求，所以可以不费力地进行大的性能改进。
+ 在这些例子中，你应该设置Cache-Control头，将max-age的值设置为一年。建议也将Expires的值和max-age的值设置成一样。
+ **1年等于31536000秒**
+```javascript
+Cache-Control:public;max-age=31536000
+Expires:Mon,25,jun 2013 21:31:12 GMT
+```
+## 动态内容
+动态内容有更多的细微差别。对于每一种资源，开发人员必须评估缓存的程度，以及向用户提供陈旧内容的含义。两个例子是博客RSS提要（每几小时不会改变一次）的内容，用于驱动用户Twitter时间表的JSON数据包（每隔几秒钟更新一次）。在这种情况下，只要您相信可能的资源，而不给最终用户造成问题，那么缓存资源是合理的。
+
+## 隐私内容
+私有内容（即可以被视为敏感且受安全措施影响的内容）需要更多的评估。不仅你作为开发者需要确定一个特定的资源缓存，但是你还需要考虑具有中介缓存的影响（如Web代理缓存的）可能是用户控制之外的文件。如果有疑问，完全不缓存这些项目是安全的选择。
+如果最终客户端缓存仍然是可取的，您可以请求资源仅在私有缓存（即仅在最终用户的浏览器缓存中）时缓存：
+```javascript
+Cache-Control:private,max-age=31536000
+```
+# 阻止缓存(cache prevention)
+
+高度安全或可变资源通常不需要缓存。例如：任何涉及购物车结帐过程的事情。不幸的是，仅仅省略缓存头将不起作用，因为许多现代Web浏览器基于自己的内部算法缓存项。在这种情况下，有必要告诉浏览器显式地不缓存项。
+除了public和private，Cache-Control头信息可以被指定为no-cache和no-store，通知浏览器在任何情况下都不缓存资源。
+**两者都需要，IE使用no-cache，Firefox使用no-store**
+```javascript
+Cache-Control:no-cache,no-store
+```
+
+# 补充(Implementation)
+一旦理解了HTTP缓存背后的概念，下一步就是在应用程序中实现它们。大多数现代Web框架使这成为一项微不足道的任务。
+* Ruby/Rails:[链接]( https://devcenter.heroku.com/articles/http-caching-ruby-rails)
+* Java:[链接]( https://devcenter.heroku.com/articles/jax-rs-http-caching)
