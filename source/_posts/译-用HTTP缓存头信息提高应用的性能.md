@@ -3,7 +3,7 @@ title: '[译]用HTTP缓存头信息提高应用的性能'
 date: 2018-02-13 08:57:43
 tags:
 ---
-今天看到一篇英文文章，觉得挺好的，原文链接在<a href="https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers#http-cache-headers">这里</a>,就想着试试看能不能翻译下，顺便巩固下英语能力。翻译的不准确的话还请见谅。
+今天看到一篇英文文章，觉得挺好的，原文链接在**[原文链接](https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers#http-cache-headers)**,就想着试试看能不能翻译下，顺便巩固下英语能力。翻译的不准确的话还请见谅。
 
 <!--more-->
 现代的开发者有各种各样的技术和科技可以用来提升应用的性能和用户体验。经常最被忽视的一项技术就是HTTP缓存。
@@ -55,7 +55,7 @@ Expires:Mon,25 Jun 2012 21:31:12 GM
 ![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi3.jpg)
 虽然条件请求确实是一个网络请求，但是未修改的资源返回一个空的响应体-从而节省了将资源返回到最终客户端的成本。后端的服务器还常常能够快速的确定资源的最后修改日期，不需要访问自身的资源从而节省传输时间。
 
-## Time-based
+## 以时间为依据(Time-based)
 
 一个time-based条件请求保证在浏览器缓存后，仅当请求资源被更改后，请求的内容才会被传输。如果缓存的副本是最新的，则服务器返回304状态码。
 
@@ -70,7 +70,7 @@ If-Modified-Since:Mon ,03 Jan 201117:45:57 GMT
 ```
 如果请求的资源自从Mon ,03 Jan 201117:45:57 GMT时间段都没有改变，服务器就会返回一个空的响应体和响应码304。
 
-## Content-based
+## 以内容为依据(Content-based)
 ETag(或者Entity Tag)和Last-Modified头有着相似的工作方式，唯一不同的是ETag的值是资源内容的编码（比如MD5hash值）。ETag可以让服务器判断缓存的资源的内容和最新的资源内容有没有不同的地方。
 
 **当最后一个修改日期难以确定时，此标记非常有用**
@@ -83,3 +83,17 @@ ETag:"15f0fff99ed5aae4edffdd6496d7131f"
 If-None-Match:"15f0fff99ed5aae4edffdd6496d7131f"
 ```
 有了If-Modified-Since头信息，如果最新的资源有相同的ETag值，表明资源的值和浏览器缓存的值相同，然后HTTP状态码304就被返回了。
+
+# 可见性(Visibility)
+大多数现代浏览器都包括健全的请求/响应可视化工具和自测系统。在Chorme和Safari中的网络检查工具可以在Network选项卡中展示响应和请求头信息。
+
+一个原始的http://http-caching-demo.herokuapp.com/网络请求展示了默认的响应头信息（没有缓存指令）
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi4.jpg)
+通过添加cached查询参数，http://http-caching-demo.herokuapp.com/?cache=true，应用的缓存开启，Cache-Control和Expires头信息。（两者都设置了30s的缓存）；
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi5.jpg)
+请求中增加ETag参数， http://http-caching-demo.herokuapp.com/?etag=true, 使得应用指定ETag序列化的JSON内容
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi6.jpg)
+通过深入检查基于ETag的网络请求，可以看到浏览器从服务器下载的文件
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi7.jpg)
+然而，在随后的请求中，你可以看到服务器返回的ETag检查结果为HTTP状态码304（not modified），随后浏览器就使用它自己的缓存副本。
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi8.jpg)
