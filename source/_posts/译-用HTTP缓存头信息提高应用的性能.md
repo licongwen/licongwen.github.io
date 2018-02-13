@@ -11,11 +11,11 @@ HTTP缓存是所有现代Web浏览器中普遍采用的规范，使其在Web应�
 
 # 综述
 HTTP缓存发生时，浏览器在本地存储网页资源的副本以便下次资源被需要的时候能更快的检索到。当应用程序提供资源时，它可以将缓存头附加到指定所需缓存行为的响应中。
-<img src='img/yi1.jpg' alt="图片"/>
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi1.jpg)
 当一个项目被完全缓存后，浏览器可能不会选择和服务器通信并且使用在本地存储的副本。
-<img scr="https://github.com/licongwen/licongwen.github.io/tree/master/images/yi1.jpg" alt="图片"/>
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi2.jpg)
 例如：一旦你的应用的css样式表被缓存到本地，浏览器在使用的会话期间就没有必要再一次下载css样式表。这对于很多有用的类型来说是正确的，比如javascript文件，图片和一些不经常改变的动态文件。在这些情况下，用户浏览器在本地缓存此文件是有益的，每当再次请求资源时，都会使用该副本。使用HTTP缓存头的应用程序能够控制此缓存行为并减轻服务器端负载。
-
+图
 # HTTP 缓存头
 有两类主要的缓存头，Cache-Control和Expires
 
@@ -25,7 +25,7 @@ HTTP缓存发生时，浏览器在本地存储网页资源的副本以便下次�
 
 Cache-Control头是最重要的头信息，因为它有效地“打开”浏览器中的缓存。有了这个头信息，并设置一个有效值就可以开启缓存，浏览器就可以指定缓存文件多长时间。没有这个缓存头，浏览器随后的每次请求中在一次请求文件。
 
-**public**资源不仅可以终端浏览器中被缓存，还可以在任何服务其他用户的中间代理(intermediate proxies )中被缓存。
+**public**资源不仅可以终端浏览器中被缓存，还可以在任何服务其他用户的中间代理服务器(intermediate proxies )中被缓存。
 ```javascript
 Cache-Control:public
 ```
@@ -52,12 +52,13 @@ Expires:Mon,25 Jun 2012 21:31:12 GM
 # 条件请求(Conditional requests)
 
 条件请求是指浏览器可以询问服务器是否有资源的更新副本。浏览器将发送一些关于它所缓存的资源的信息，服务器将决定是否应该返回更新的内容或浏览器的副本是最新的。对于后者，返回的HTTP状态为304（not modified）。
-<img src="" alt="图片"/>
+![图片](https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi3.jpg)
 虽然条件请求确实是一个网络请求，但是未修改的资源返回一个空的响应体-从而节省了将资源返回到最终客户端的成本。后端的服务器还常常能够快速的确定资源的最后修改日期，不需要访问自身的资源从而节省传输时间。
 
 ## Time-based
 
-一个time-based条件请求保证
+一个time-based条件请求保证在浏览器缓存后，仅当请求资源被更改后，请求的内容才会被传输。如果缓存的副本是最新的，则服务器返回304状态码。
+
 为了启用条件请求，应用程序通过Last-Modified响应头来指明最后的修改时间。
 ```javascript
 Cache-Control:public,max-age=31536000
