@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="今天看到一篇英文文章，觉得挺好的，原文链接在原文链接,就想着试试看能不能翻译下，顺便巩固下英语能力。翻译的不准确的话还请见谅。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="[译]用HTTP缓存头信息提高应用的性能">
+<meta property="og:url" content="http://yoursite.com/2018/02/13/译-用HTTP缓存头信息提高应用的性能/index.html">
+<meta property="og:site_name" content="李从文">
+<meta property="og:description" content="今天看到一篇英文文章，觉得挺好的，原文链接在原文链接,就想着试试看能不能翻译下，顺便巩固下英语能力。翻译的不准确的话还请见谅。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi1.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi2.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi3.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi4.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi5.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi6.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi7.jpg">
+<meta property="og:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi8.jpg">
+<meta property="og:updated_time" content="2018-06-30T05:13:03.044Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="[译]用HTTP缓存头信息提高应用的性能">
+<meta name="twitter:description" content="今天看到一篇英文文章，觉得挺好的，原文链接在原文链接,就想着试试看能不能翻译下，顺便巩固下英语能力。翻译的不准确的话还请见谅。">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi1.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/13/译-用HTTP缓存头信息提高应用的性能/"/>
+
+
+
+
+
+  <title>[译]用HTTP缓存头信息提高应用的性能 | 李从文</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">李从文</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">临渊羡鱼，不如退而结网！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/13/译-用HTTP缓存头信息提高应用的性能/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李从文">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">[译]用HTTP缓存头信息提高应用的性能</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-02-13T08:57:43+08:00">
+                2018-02-13
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>今天看到一篇英文文章，觉得挺好的，原文链接在<strong><a href="https://devcenter.heroku.com/articles/increasing-application-performance-with-http-cache-headers#http-cache-headers" target="_blank" rel="noopener">原文链接</a></strong>,就想着试试看能不能翻译下，顺便巩固下英语能力。翻译的不准确的话还请见谅。</p>
+<a id="more"></a>
+<p>现代的开发者有各种各样的技术和科技可以用来提升应用的性能和用户体验。经常最被忽视的一项技术就是HTTP缓存。<br>HTTP缓存是所有现代Web浏览器中普遍采用的规范，使其在Web应用程序中的实现变得简单。适当使用这些标准可以大大提高应用程序的响应时间，减少服务器负载。然而，不正确的缓存可以让使用者看到过时的内容和难以调式的问题。本文讨论HTTP缓存的细节，以及在何种情况下采用基于HTTP缓存头的策略。</p>
+<h1 id="综述"><a href="#综述" class="headerlink" title="综述"></a>综述</h1><p>HTTP缓存发生时，浏览器在本地存储网页资源的副本以便下次资源被需要的时候能更快的检索到。当应用程序提供资源时，它可以将缓存头附加到指定所需缓存行为的响应中。<br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi1.jpg" alt="图片"><br>当一个项目被完全缓存后，浏览器可能不会选择和服务器通信并且使用在本地存储的副本。<br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi2.jpg" alt="图片"><br>例如：一旦你的应用的css样式表被缓存到本地，浏览器在使用的会话期间就没有必要再一次下载css样式表。这对于很多有用的类型来说是正确的，比如javascript文件，图片和一些不经常改变的动态文件。在这些情况下，用户浏览器在本地缓存此文件是有益的，每当再次请求资源时，都会使用该副本。使用HTTP缓存头的应用程序能够控制此缓存行为并减轻服务器端负载。<br>图</p>
+<h1 id="HTTP-缓存头"><a href="#HTTP-缓存头" class="headerlink" title="HTTP 缓存头"></a>HTTP 缓存头</h1><p>有两类主要的缓存头，Cache-Control和Expires</p>
+<h2 id="Cache-Control"><a href="#Cache-Control" class="headerlink" title="Cache-Control"></a>Cache-Control</h2><p><strong>没有设置cach-control头信息，其他任何缓存头将不会有效果</strong></p>
+<p>Cache-Control头是最重要的头信息，因为它有效地“打开”浏览器中的缓存。有了这个头信息，并设置一个有效值就可以开启缓存，浏览器就可以指定缓存文件多长时间。没有这个缓存头，浏览器随后的每次请求中在一次请求文件。</p>
+<p><strong>public</strong>资源不仅可以终端浏览器中被缓存，还可以在任何服务其他用户的中间代理服务器(intermediate proxies )中被缓存。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:public</span><br></pre></td></tr></table></figure></p>
+<p><strong>private</strong>资源绕过中间代理，只能在客服端被缓存<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:private</span><br></pre></td></tr></table></figure></p>
+<p>Cache-Control头信息的值是组合值，指明资源是公共的或者私有的，也指明了缓存在过期之前最长的有效时间。max-age的值被用来指明资源可以缓存的时间。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:public,max-age=<span class="number">32536000</span></span><br></pre></td></tr></table></figure></p>
+<p>当缓存头启动客户端缓存并设置最大缓存时间，Expires头用来指定一个特殊的时间，指明资源不在有效。</p>
+<h2 id="Expires"><a href="#Expires" class="headerlink" title="Expires"></a>Expires</h2><p>当和Cache-Control头一起设置时，Expires简单的设置一个时间指明该资源不在有效。从这个日期开始，浏览器将缓存一个新的资源副本。在此之前，浏览器将使用本地副本：<br><strong>如果Expires和max-age都设置了值，那么max-age的优先级更高</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:public</span><br><span class="line">Expires:Mon,<span class="number">25</span> Jun <span class="number">2012</span> <span class="number">21</span>:<span class="number">31</span>:<span class="number">12</span> GM</span><br></pre></td></tr></table></figure></p>
+<p>当Cache-Control和Expires告诉浏览器什么时候去下次请求网络资源，还有其他一些头信息怎么样去请求网络上的资源。这些类型的请求称为条件请求。</p>
+<h1 id="条件请求-Conditional-requests"><a href="#条件请求-Conditional-requests" class="headerlink" title="条件请求(Conditional requests)"></a>条件请求(Conditional requests)</h1><p>条件请求是指浏览器可以询问服务器是否有资源的更新副本。浏览器将发送一些关于它所缓存的资源的信息，服务器将决定是否应该返回更新的内容或浏览器的副本是最新的。对于后者，返回的HTTP状态为304（not modified）。<br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi3.jpg" alt="图片"><br>虽然条件请求确实是一个网络请求，但是未修改的资源返回一个空的响应体-从而节省了将资源返回到最终客户端的成本。后端的服务器还常常能够快速的确定资源的最后修改日期，不需要访问自身的资源从而节省传输时间。</p>
+<h2 id="以时间为依据-Time-based"><a href="#以时间为依据-Time-based" class="headerlink" title="以时间为依据(Time-based)"></a>以时间为依据(Time-based)</h2><p>一个time-based条件请求保证在浏览器缓存后，仅当请求资源被更改后，请求的内容才会被传输。如果缓存的副本是最新的，则服务器返回304状态码。</p>
+<p>为了启用条件请求，应用程序通过Last-Modified响应头来指明最后的修改时间。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:public,max-age=<span class="number">31536000</span></span><br><span class="line">Last-Modified:Mon,<span class="number">03</span> Jan <span class="number">2011</span> <span class="number">17</span>:<span class="number">45</span>:<span class="number">57</span> GMT</span><br></pre></td></tr></table></figure></p>
+<p>下次浏览器请求资源时，请求仅仅会查看自请求头信息的Last-Modified-Since字段值，查看资源的内容在这个时间后是否有改变。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">If-Modified-Since:Mon ,<span class="number">03</span> Jan <span class="number">201117</span>:<span class="number">45</span>:<span class="number">57</span> GMT</span><br></pre></td></tr></table></figure></p>
+<p>如果请求的资源自从Mon ,03 Jan 201117:45:57 GMT时间段都没有改变，服务器就会返回一个空的响应体和响应码304。</p>
+<h2 id="以内容为依据-Content-based"><a href="#以内容为依据-Content-based" class="headerlink" title="以内容为依据(Content-based)"></a>以内容为依据(Content-based)</h2><p>ETag(或者Entity Tag)和Last-Modified头有着相似的工作方式，唯一不同的是ETag的值是资源内容的编码（比如MD5hash值）。ETag可以让服务器判断缓存的资源的内容和最新的资源内容有没有不同的地方。</p>
+<p><strong>当最后一个修改日期难以确定时，此标记非常有用</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:public ,max-age=<span class="number">31536000</span></span><br><span class="line">ETag:<span class="string">"15f0fff99ed5aae4edffdd6496d7131f"</span></span><br></pre></td></tr></table></figure></p>
+<p>在随后的浏览器请求中，If-None-Match请求头被发送，它的值是上一次请求资源的ETag值。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">If-None-Match:<span class="string">"15f0fff99ed5aae4edffdd6496d7131f"</span></span><br></pre></td></tr></table></figure></p>
+<p>有了If-Modified-Since头信息，如果最新的资源有相同的ETag值，表明资源的值和浏览器缓存的值相同，然后HTTP状态码304就被返回了。</p>
+<h1 id="可见性-Visibility"><a href="#可见性-Visibility" class="headerlink" title="可见性(Visibility)"></a>可见性(Visibility)</h1><p>大多数现代浏览器都包括健全的请求/响应可视化工具和自测系统。在Chorme和Safari中的网络检查工具可以在Network选项卡中展示响应和请求头信息。</p>
+<p>一个原始的<a href="http://http-caching-demo.herokuapp.com/网络请求展示了默认的响应头信息（没有缓存指令）" target="_blank" rel="noopener">http://http-caching-demo.herokuapp.com/网络请求展示了默认的响应头信息（没有缓存指令）</a><br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi4.jpg" alt="图片"></p>
+<p>通过添加cached查询参数，<a href="http://http-caching-demo.herokuapp.com/?cache=true，" target="_blank" rel="noopener">http://http-caching-demo.herokuapp.com/?cache=true，</a> 开启应用的缓存，返回带有Cache-Control和Expires头信息。（两者都设置了30s的缓存）；<br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi5.jpg" alt="图片"></p>
+<p>请求中增加ETag参数， <a href="http://http-caching-demo.herokuapp.com/?etag=true" target="_blank" rel="noopener">http://http-caching-demo.herokuapp.com/?etag=true</a>, 使得应用指定ETag序列化的JSON内容<br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi6.jpg" alt="图片"></p>
+<p>通过深入检查基于ETag的网络请求，可以看到浏览器从服务器下载的文件<br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi7.jpg" alt="图片"></p>
+<p>然而，在随后的请求中，你可以看到服务器返回的ETag检查结果为HTTP状态码304（not modified），随后浏览器就使用它自己的缓存副本。<br><img src="https://raw.githubusercontent.com/licongwen/licongwen.github.io/gh-pages/images/yi8.jpg" alt="图片"></p>
+<h1 id="使用案例"><a href="#使用案例" class="headerlink" title="使用案例"></a>使用案例</h1><h2 id="静态资源"><a href="#静态资源" class="headerlink" title="静态资源"></a>静态资源</h2><p> 在正常使用情况下，任何开发人员的出发点都应该是对应用程序中的文件进行积极的缓存策略，而这些策略不会改变。通常的，包括为应用服务的静态资源有图片，css文件和javascript文件。由于这些文件通常在每一页上重新请求，所以可以不费力地进行大的性能改进。<br> 在这些例子中，你应该设置Cache-Control头，将max-age的值设置为一年。建议也将Expires的值和max-age的值设置成一样。<br> <strong>1年等于31536000秒</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:public;max-age=<span class="number">31536000</span></span><br><span class="line">Expires:Mon,<span class="number">25</span>,jun <span class="number">2013</span> <span class="number">21</span>:<span class="number">31</span>:<span class="number">12</span> GMT</span><br></pre></td></tr></table></figure></p>
+<h2 id="动态内容"><a href="#动态内容" class="headerlink" title="动态内容"></a>动态内容</h2><p>动态内容有更多的细微差别。对于每一种资源，开发人员必须评估缓存的程度，以及向用户提供陈旧内容的含义。两个例子是博客RSS提要（每几小时不会改变一次）的内容，用于驱动用户Twitter时间表的JSON数据包（每隔几秒钟更新一次）。在这种情况下，只要您相信可能的资源，而不给最终用户造成问题，那么缓存资源是合理的。</p>
+<h2 id="隐私内容"><a href="#隐私内容" class="headerlink" title="隐私内容"></a>隐私内容</h2><p>私有内容（即可以被视为敏感且受安全措施影响的内容）需要更多的评估。不仅你作为开发者需要确定一个特定的资源缓存，但是你还需要考虑具有中介缓存的影响（如Web代理缓存的）可能是用户控制之外的文件。如果有疑问，完全不缓存这些项目是安全的选择。<br>如果最终客户端缓存仍然是可取的，您可以请求资源仅在私有缓存（即仅在最终用户的浏览器缓存中）时缓存：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:private,max-age=<span class="number">31536000</span></span><br></pre></td></tr></table></figure></p>
+<h1 id="阻止缓存-cache-prevention"><a href="#阻止缓存-cache-prevention" class="headerlink" title="阻止缓存(cache prevention)"></a>阻止缓存(cache prevention)</h1><p>高度安全或可变资源通常不需要缓存。例如：任何涉及购物车结帐过程的事情。不幸的是，仅仅省略缓存头将不起作用，因为许多现代Web浏览器基于自己的内部算法缓存项。在这种情况下，有必要告诉浏览器显式地不缓存项。<br>除了public和private，Cache-Control头信息可以被指定为no-cache和no-store，通知浏览器在任何情况下都不缓存资源。<br><strong>两者都需要，IE使用no-cache，Firefox使用no-store</strong><br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Cache-Control:no-cache,no-store</span><br></pre></td></tr></table></figure></p>
+<h1 id="补充-Implementation"><a href="#补充-Implementation" class="headerlink" title="补充(Implementation)"></a>补充(Implementation)</h1><p>一旦理解了HTTP缓存背后的概念，下一步就是在应用程序中实现它们。大多数现代Web框架使这成为一项微不足道的任务。</p>
+<ul>
+<li>Ruby/Rails:<a href="https://devcenter.heroku.com/articles/http-caching-ruby-rails" target="_blank" rel="noopener">链接</a></li>
+<li>Java:<a href="https://devcenter.heroku.com/articles/jax-rs-http-caching" target="_blank" rel="noopener">链接</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/05/vue在Android4-4-2版本下兼容性问题解决/" rel="next" title="vue在Android4.4.2版本下兼容性问题解决">
+                <i class="fa fa-chevron-left"></i> vue在Android4.4.2版本下兼容性问题解决
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/03/01/css小结/" rel="prev" title="css小结">
+                css小结 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Leo</p>
+              <p class="site-description motion-element" itemprop="description">hexo light</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#综述"><span class="nav-number">1.</span> <span class="nav-text">综述</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#HTTP-缓存头"><span class="nav-number">2.</span> <span class="nav-text">HTTP 缓存头</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Cache-Control"><span class="nav-number">2.1.</span> <span class="nav-text">Cache-Control</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Expires"><span class="nav-number">2.2.</span> <span class="nav-text">Expires</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#条件请求-Conditional-requests"><span class="nav-number">3.</span> <span class="nav-text">条件请求(Conditional requests)</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#以时间为依据-Time-based"><span class="nav-number">3.1.</span> <span class="nav-text">以时间为依据(Time-based)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#以内容为依据-Content-based"><span class="nav-number">3.2.</span> <span class="nav-text">以内容为依据(Content-based)</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#可见性-Visibility"><span class="nav-number">4.</span> <span class="nav-text">可见性(Visibility)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#使用案例"><span class="nav-number">5.</span> <span class="nav-text">使用案例</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#静态资源"><span class="nav-number">5.1.</span> <span class="nav-text">静态资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态内容"><span class="nav-number">5.2.</span> <span class="nav-text">动态内容</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#隐私内容"><span class="nav-number">5.3.</span> <span class="nav-text">隐私内容</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#阻止缓存-cache-prevention"><span class="nav-number">6.</span> <span class="nav-text">阻止缓存(cache prevention)</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#补充-Implementation"><span class="nav-number">7.</span> <span class="nav-text">补充(Implementation)</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="拷贝也是JS的重难点之一">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深浅拷贝">
+<meta property="og:url" content="http://yoursite.com/2017/11/17/深浅拷贝/index.html">
+<meta property="og:site_name" content="李从文">
+<meta property="og:description" content="拷贝也是JS的重难点之一">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-06-30T05:13:03.042Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="深浅拷贝">
+<meta name="twitter:description" content="拷贝也是JS的重难点之一">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2017/11/17/深浅拷贝/"/>
+
+
+
+
+
+  <title>深浅拷贝 | 李从文</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">李从文</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">临渊羡鱼，不如退而结网！</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/11/17/深浅拷贝/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Leo">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="李从文">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">深浅拷贝</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2017-11-17T22:54:17+08:00">
+                2017-11-17
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>拷贝也是JS的重难点之一<br><a id="more"></a></p>
+<h1 id="数组的浅拷贝"><a href="#数组的浅拷贝" class="headerlink" title="数组的浅拷贝"></a>数组的浅拷贝</h1><p>我们知道数组的一些方法，比如slice，concat返回一个新数组的特性来实现拷贝</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> oldArr = [<span class="string">'old'</span>,<span class="string">'a'</span>,<span class="literal">true</span>];</span><br><span class="line"><span class="keyword">var</span> newArr = oldArr.concat();</span><br><span class="line">newArr[<span class="number">0</span>]=<span class="string">'new'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(oldArr);<span class="comment">//['old','a',true]</span></span><br><span class="line"><span class="built_in">console</span>.log(newArr);<span class="comment">//['new','a',true]</span></span><br></pre></td></tr></table></figure>
+<p>但是如果数组中嵌套了数组或者对象，看看结果如何：<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> oldArr = [&#123;<span class="attr">name</span>:<span class="string">'xiaojie'</span>&#125;,[<span class="string">'old'</span>]];</span><br><span class="line"><span class="keyword">var</span> newArr = oldArr.concat();</span><br><span class="line">newArr[<span class="number">0</span>].name = <span class="string">'xiaobao'</span>;</span><br><span class="line">newArr[<span class="number">1</span>][<span class="number">0</span>] = <span class="string">'new'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(oldArr);<span class="comment">//[&#123;name:'xiaobao'&#125;,['new']]</span></span><br><span class="line"><span class="built_in">console</span>.log(newArr);<span class="comment">//[&#123;name:'xiaobao'&#125;,['new']]</span></span><br></pre></td></tr></table></figure></p>
+<p>可以发现，改变了newArr的值，oldArr的值也跟着改变。<br>当数组元素是基本类型的时候，新旧数组的值互不影响，当数组元素为Object类型的时候，改变新数组的值会影响就旧数组的值。<br>我们把复制引用对象的拷贝方法称为浅拷贝，与之对应的就是深拷贝，深拷贝就是完全的拷贝一个对象，即使嵌套对象两者也互相分离，修改一个对象的属性，也不会影响另一个</p>
+<h1 id="数组的深拷贝"><a href="#数组的深拷贝" class="headerlink" title="数组的深拷贝"></a>数组的深拷贝</h1><p>介绍一个简单粗暴的深拷贝方法，不仅适用于数组，还适用于对象:JSON.parse(JSON.stringify(oldArr))。<br><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> oldArr = [&#123;<span class="attr">name</span>:<span class="string">'xiaojie'</span>&#125;,[<span class="string">'old'</span>],<span class="string">'old'</span>,<span class="literal">true</span>];</span><br><span class="line"><span class="keyword">var</span> newArr = <span class="built_in">JSON</span>.parse(<span class="built_in">JSON</span>.stringify(oldArr));</span><br><span class="line">newArr[<span class="number">0</span>].name=<span class="string">'bao'</span>;</span><br><span class="line">newArr[<span class="number">1</span>][<span class="number">0</span>]=<span class="string">'new'</span>;</span><br><span class="line">newArr[<span class="number">2</span>]=<span class="string">'new'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(oldArr);<span class="comment">// [&#123;name:'xiaojie'&#125;,['old'],'old',true]</span></span><br><span class="line"><span class="built_in">console</span>.log(newArr);<span class="comment">// [&#123;name:'bao'&#125;,['new'],'new',true]</span></span><br></pre></td></tr></table></figure></p>
+<p> PS:方法JSON.parse(JSON.tostringify(arr))不能拷贝函数</p>
+<h1 id="深拷贝的实现"><a href="#深拷贝的实现" class="headerlink" title="深拷贝的实现"></a>深拷贝的实现</h1><p> 实现原理：试想一下，我们先拷贝最外层的基础数据类型，遇到引用类型时，在循环拷贝引用类型里面的基础类型，就可以实现深拷贝，代码如下：</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">deepAssign</span>(<span class="params">obj</span>)</span>&#123;</span><br><span class="line">  <span class="keyword">if</span>(<span class="keyword">typeof</span> obj !==<span class="string">"object"</span>)&#123;</span><br><span class="line">    <span class="keyword">return</span>;</span><br><span class="line">  &#125;</span><br><span class="line">  <span class="keyword">var</span> newObj=obj <span class="keyword">instanceof</span> <span class="built_in">Array</span>?[]:&#123;&#125;;</span><br><span class="line">  <span class="built_in">Object</span>.keys(obj).forEach(<span class="function"><span class="keyword">function</span>(<span class="params">item,index</span>)</span>&#123;</span><br><span class="line">    newObj[item]=<span class="keyword">typeof</span> obj[item] === <span class="string">'object'</span>?deepAssign(obj[item]):obj[item];</span><br><span class="line">    </span><br><span class="line">  &#125;)</span><br><span class="line">  <span class="keyword">return</span> newObj;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> oldObj=&#123;</span><br><span class="line">	name:<span class="string">'jiejie'</span>,</span><br><span class="line">	age:<span class="number">24</span>,</span><br><span class="line">	friends:&#123;</span><br><span class="line">		name:<span class="string">'baobao'</span>,</span><br><span class="line">		age:<span class="number">23</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> objOld=&#123;</span><br><span class="line">     name:<span class="string">'li'</span>,</span><br><span class="line">     friends:&#123;</span><br><span class="line">     name:<span class="string">'xiaodebao'</span></span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line"><span class="keyword">var</span> objNew=deepAssign(objOld);</span><br><span class="line">objNew.friends.name=<span class="string">'nihaoma'</span>;</span><br><span class="line">objNew.name=<span class="string">'nihaoma'</span>;</span><br><span class="line"><span class="built_in">console</span>.log(objOld.name);<span class="comment">//li</span></span><br><span class="line"><span class="built_in">console</span>.log(objNew.name);<span class="comment">//nihaoma;</span></span><br><span class="line"><span class="built_in">console</span>.log(objOld.friends.name);<span class="comment">//xioadebao</span></span><br><span class="line"><span class="built_in">console</span>.log(objNew.friends.name);<span class="comment">//nihaoma</span></span><br></pre></td></tr></table></figure>
+<h1 id="ES6新增的Object-assign"><a href="#ES6新增的Object-assign" class="headerlink" title="ES6新增的Object.assign()"></a>ES6新增的Object.assign()</h1><p> 用于将所有可枚举的属性的值从一个或多个源对象复制到目标对象。它将返回目标对象。来看看Object.assign()是深拷贝还是浅拷贝</p>
+ <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> oldObj=&#123;</span><br><span class="line">	name:<span class="string">'jiejie'</span>,</span><br><span class="line">	age:<span class="number">24</span>,</span><br><span class="line">	friends:&#123;</span><br><span class="line">		name:<span class="string">'baobao'</span>,</span><br><span class="line">		age:<span class="number">23</span></span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">var</span> newObj = <span class="built_in">Object</span>.assign(&#123;&#125;,oldObj);</span><br><span class="line">oldObj.name =<span class="string">"xiaoxiao"</span>;</span><br><span class="line">oldObj.friends.name=<span class="string">"dingding"</span>;</span><br><span class="line"><span class="built_in">console</span>.log(oldObj.name);<span class="comment">//xiaoxiao</span></span><br><span class="line"><span class="built_in">console</span>.log(newObj.name);<span class="comment">//jiejie;</span></span><br><span class="line"><span class="built_in">console</span>.log(newObj.friends.name);<span class="comment">//dingding</span></span><br><span class="line"><span class="built_in">console</span>.log(newObj .friends.name);<span class="comment">//dingding</span></span><br></pre></td></tr></table></figure>
+<p> 由此可见Object.assign()也是浅拷贝。如果对象属性是基本类型，则互不影响，如果对象属性也是对象，则是复制的对象的应用</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2017/10/24/数组去重/" rel="next" title="数组去重">
+                <i class="fa fa-chevron-left"></i> 数组去重
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2017/12/26/js中的继承/" rel="prev" title="js中的继承">
+                js中的继承 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Leo</p>
+              <p class="site-description motion-element" itemprop="description">hexo light</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">标签</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#数组的浅拷贝"><span class="nav-number">1.</span> <span class="nav-text">数组的浅拷贝</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#数组的深拷贝"><span class="nav-number">2.</span> <span class="nav-text">数组的深拷贝</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#深拷贝的实现"><span class="nav-number">3.</span> <span class="nav-text">深拷贝的实现</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ES6新增的Object-assign"><span class="nav-number">4.</span> <span class="nav-text">ES6新增的Object.assign()</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Leo</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
